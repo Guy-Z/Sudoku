@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+}
+
+group 'love.xuqinqin'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.alibaba:fastjson:1.2.79'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    compile 'org.projectlombok:lombok:1.18.20'
+}
+
+test {
+    useJUnitPlatform()
+}
