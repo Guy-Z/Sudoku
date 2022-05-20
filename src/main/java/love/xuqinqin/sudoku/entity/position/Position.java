@@ -1,9 +1,6 @@
 package love.xuqinqin.sudoku.entity.position;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Objects;
 
@@ -11,18 +8,31 @@ import java.util.Objects;
  * @author Guy_Z
  * @date 2022-05-18 14:46
  */
-@Data
+@Getter
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class Position {
 
     //二维坐标 1~9
+    /**
+     * 行
+     */
     private Integer x;
+    /**
+     * 列
+     */
     private Integer y;
 
     //次序坐标 1~9
+    /**
+     * 堆(指3*3的小9宫格)
+     */
     private Integer i;
+    /**
+     * 位
+     */
     private Integer j;
 
     public static Position by2D(Integer x, Integer y) {

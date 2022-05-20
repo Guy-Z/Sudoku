@@ -1,19 +1,17 @@
 package love.xuqinqin.sudoku.entity.cell;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import love.xuqinqin.sudoku.entity.position.Position;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Guy_Z
  * @date 2022-05-18 13:50
  */
-@Data
+@Getter
+@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,5 +23,12 @@ public class Cell {
 
     public static Cell instance(Integer value) {
         return new Cell(value, new ArrayList<>(9));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        return Objects.equals(value, ((Cell) o).value);
     }
 }
