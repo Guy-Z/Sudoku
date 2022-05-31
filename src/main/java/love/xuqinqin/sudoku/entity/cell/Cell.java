@@ -25,6 +25,14 @@ public class Cell {
         return new Cell(value, new ArrayList<>(9));
     }
 
+    public boolean isNotSure() {
+        return this.value == null || value.equals(0);
+    }
+
+    public void clearMark(){
+        this.mark.clear();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -149,27 +149,22 @@ public class Sudoku {
         for (int x = 1; x <= 9; x++) {
             for (int y = 1; y <= 9; y++) {
                 Cell cell = get(x, y);
-                if (!cell.getValue().equals(0)) {
-                    cell.getMark().clear();
-                    continue;
-                }
+                if (!cell.isNotSure()) continue;
                 List<Integer> rawMark = SudokuUtil.getNormalMark();
                 getRow(x).forEach((position, cellForeach) -> {
-                    if (cellForeach.getValue() == 0) return;
+                    if (cellForeach.isNotSure()) return;
                     rawMark.remove(cellForeach.getValue());
                 });
                 getColumn(y).forEach((position, cellForeach) -> {
-                    if (cellForeach.getValue() == 0) return;
+                    if (cellForeach.isNotSure()) return;
                     rawMark.remove(cellForeach.getValue());
                 });
                 getStack(Position.by2D(x, y).getI()).forEach((position, cellForeach) -> {
-                    if (cellForeach.getValue() == 0) return;
+                    if (cellForeach.isNotSure()) return;
                     rawMark.remove(cellForeach.getValue());
                 });
-                cell.getMark().clear();
-                if (rawMark.size() == 1) {
-                    cell.setValue(rawMark.get(0));
-                }
+                if (rawMark.size() == 1) cell.setValue(rawMark.get(0));
+                cell.clearMark();
                 cell.getMark().addAll(rawMark);
             }
         }
