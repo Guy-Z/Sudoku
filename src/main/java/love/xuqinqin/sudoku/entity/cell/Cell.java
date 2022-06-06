@@ -25,6 +25,10 @@ public class Cell {
         return new Cell(value, new ArrayList<>(9));
     }
 
+    public Cell newInstance(){
+        return new Cell(value, mark);
+    }
+
     public boolean isNotSure() {
         return this.value == null || value.equals(0);
     }

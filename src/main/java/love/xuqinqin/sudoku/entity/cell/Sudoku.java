@@ -5,11 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import love.xuqinqin.sudoku.common.CiPredicate;
 import love.xuqinqin.sudoku.common.Constant;
 import love.xuqinqin.sudoku.entity.position.Position;
-import love.xuqinqin.sudoku.util.SudokuUtil;
+import love.xuqinqin.sudoku.sudoku.AnalyzeRules;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
@@ -19,6 +23,7 @@ import java.util.stream.Collectors;
  */
 @Data
 @ToString
+@Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
 public class Sudoku {
@@ -145,29 +150,33 @@ public class Sudoku {
         return true;
     }
 
-    public Sudoku mark() {
+    public boolean mark(AnalyzeRules analyzeRules) {
+        AtomicBoolean useful = new AtomicBoolean();
         for (int x = 1; x <= 9; x++) {
             for (int y = 1; y <= 9; y++) {
-                Cell cell = get(x, y);
+                Position position = Position.by2D(x, y);
+                Cell cell = get(position);
                 if (!cell.isNotSure()) continue;
-                List<Integer> rawMark = SudokuUtil.getNormalMark();
-                getRow(x).forEach((position, cellForeach) -> {
-                    if (cellForeach.isNotSure()) return;
-                    rawMark.remove(cellForeach.getValue());
-                });
-                getColumn(y).forEach((position, cellForeach) -> {
-                    if (cellForeach.isNotSure()) return;
-                    rawMark.remove(cellForeach.getValue());
-                });
-                getStack(Position.by2D(x, y).getI()).forEach((position, cellForeach) -> {
-                    if (cellForeach.isNotSure()) return;
-                    rawMark.remove(cellForeach.getValue());
-                });
-                if (rawMark.size() == 1) cell.setValue(rawMark.get(0));
-                cell.clearMark();
-                cell.getMark().addAll(rawMark);
+                for (CiPredicate<Sudoku, Cell, Position> analyzeRule : analyzeRules) {
+                    Cell cellCopy = cell.newInstance();
+                    analyzeRule.accept(this, cell, position);
+                    useful.set(!(cell.equals(cellCopy) && cell.getMark().equals(cellCopy.getMark())));
+                }
             }
         }
+        return useful.get();
+    }
+
+    public Sudoku analyze(AnalyzeRules analyzeRules) {
+        AtomicInteger count = new AtomicInteger();
+        while (!this.checkAll()) {
+            count.incrementAndGet();
+            if (!mark(analyzeRules)) {
+                log.warn("analyze failed! mark count: {}", count.get());
+                return this;
+            }
+        }
+        log.info("analyze success! mark count: {}", count.get());
         return this;
     }
 

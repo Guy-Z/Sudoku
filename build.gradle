@@ -14,9 +14,6 @@ dependencies {
     implementation 'com.alibaba:fastjson:1.2.79'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
     compile 'org.projectlombok:lombok:1.18.20'
-    compile fileTree(
-            dir: "D:\\app-data\\social-platforms\\WXWork\\1688855361281678\\Cache\\File\\2022-05\\AAA-1.0-SNAPSHOT-jar-with-dependencies.jar"
-    )
 }
 
 test {

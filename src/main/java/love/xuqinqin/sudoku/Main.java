@@ -18,7 +18,6 @@ public class Main {
         if (args.length == 0) {
             SpringApplication.run(Main.class, args);
         } else if ("test".equals(args[0])) {
-            System.out.println("!");
             Sudoku sudoku = ReadSudoku.get();
             Cell cell = sudoku.get(Position.by2D(1, 2));
             sudoku.getRow(cell).forEach((position, cell1) -> System.out.println(position + " : " + cell1));
