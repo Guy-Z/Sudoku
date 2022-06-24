@@ -6,10 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import love.xuqinqin.sudoku.common.CiPredicate;
+import love.xuqinqin.sudoku.common.CiConsumer;
 import love.xuqinqin.sudoku.common.Constant;
 import love.xuqinqin.sudoku.entity.position.Position;
-import love.xuqinqin.sudoku.sudoku.AnalyzeRules;
+import love.xuqinqin.sudoku.sudoku.RuleAnalyzer;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -150,28 +150,30 @@ public class Sudoku {
         return true;
     }
 
-    public boolean mark(AnalyzeRules analyzeRules) {
+    public boolean mark(RuleAnalyzer rulesAnalyze) {
         AtomicBoolean useful = new AtomicBoolean();
         for (int x = 1; x <= 9; x++) {
             for (int y = 1; y <= 9; y++) {
                 Position position = Position.by2D(x, y);
                 Cell cell = get(position);
                 if (!cell.isNotSure()) continue;
-                for (CiPredicate<Sudoku, Cell, Position> analyzeRule : analyzeRules) {
+                for (CiConsumer<Sudoku, Cell, Position> analyzeRule : rulesAnalyze.values()) {
                     Cell cellCopy = cell.newInstance();
                     analyzeRule.accept(this, cell, position);
-                    useful.set(!(cell.equals(cellCopy) && cell.getMark().equals(cellCopy.getMark())));
+                    if (!(cell.equals(cellCopy) && cell.getMark().equals(cellCopy.getMark()))) {
+                        useful.set(true);
+                    }
                 }
             }
         }
         return useful.get();
     }
 
-    public Sudoku analyze(AnalyzeRules analyzeRules) {
+    public Sudoku analyze(RuleAnalyzer rulesAnalyze) {
         AtomicInteger count = new AtomicInteger();
         while (!this.checkAll()) {
             count.incrementAndGet();
-            if (!mark(analyzeRules)) {
+            if (!mark(rulesAnalyze)) {
                 log.warn("analyze failed! mark count: {}", count.get());
                 return this;
             }

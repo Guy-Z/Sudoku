@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import love.xuqinqin.sudoku.entity.cell.Sudoku;
-import love.xuqinqin.sudoku.sudoku.AnalyzeRules;
+import love.xuqinqin.sudoku.sudoku.RuleAnalyzer;
 import love.xuqinqin.sudoku.util.ReadSudoku;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,12 +21,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SudokuController {
 
-    private final AnalyzeRules analyzeRules;
+    private final RuleAnalyzer rulesAnalyze;
 
     @PostMapping
     public Map<String, Object> sudoku(@RequestBody JSONObject sudokuJSONObject) {
         Sudoku sudoku = ReadSudoku.get(sudokuJSONObject);
 //        sudoku.put(Position.by2D(1,1), Cell.instance(9));
-        return sudoku.analyze(analyzeRules).toJSON();
+        return sudoku.analyze(rulesAnalyze).toJSON();
     }
 }
