@@ -3,6 +3,7 @@ package love.xuqinqin.sudoku.common;
 import lombok.extern.slf4j.Slf4j;
 import love.xuqinqin.sudoku.sudoku.RuleAnalyzer;
 import love.xuqinqin.sudoku.sudoku.Rules;
+import love.xuqinqin.sudoku.sudoku.RulesChild;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,7 +17,7 @@ public class CustomBeans {
 
     @Bean
     public RuleAnalyzer analyzeRules() {
-        return new RuleAnalyzer().addRules(Rules.class);
+        return new RuleAnalyzer().addRules(RulesChild.class);
     }
 
 }
